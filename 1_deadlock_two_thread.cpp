@@ -11,7 +11,11 @@
 
 /**
 
-idea:
+Task:
+
+- Create deadlock with two fibers
+
+Idea:
 
 1) - create two mutexes, each one does a lock
 

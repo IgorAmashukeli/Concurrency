@@ -20,24 +20,31 @@
  */
 
 /**
-We create a class OwnerRef and class Mutex.
-The first one stores the pointer to the object and guard_lock.
+Task:
 
-Guard lock will be destroyed at the same time the OwnerRef will be destroyed.
+Mutexed class has one method: acquire.
+Acquire returns the reference to the object, which can't be modified from now
+on. Class guarantees, two threads can't acquire the same object Class
+guarantees: after reference is destroyed, the mutex is unlocked.
 
-It means that the unlock will last until the owner ref exists.
-
-Acquire creates this OwnerRef (calls constructor) for the object.
-
-So this creates a mechanism for mutexed type of data.
 
 **/
 
 template <typename T, class Mutex = twist::ed::stdlike::mutex> class OwnerRef {
 public:
+  // constructor
   OwnerRef(T *object_ptr, Mutex &mutex)
-      : object_ptr_(object_ptr), guard_(mutex) {}
 
+      // creates object_ptr_
+      // object_ptr_ will be destroyed after end of scope
+      : object_ptr_(object_ptr),
+
+        // guard: it will be destroyed after end of scope
+        // destruction of guard <=> run of unlock function
+        // mutex is unlocked after reference is destroyed in the end of scope
+        guard_(mutex) {}
+
+  // operator -> returns the pointer to the object to modify it, using OwnerRef
   T *operator->() { return object_ptr_; }
 
 private:
@@ -48,16 +55,26 @@ private:
   std::lock_guard<Mutex> guard_;
 };
 
+// class mutexed
 template <typename T, class Mutex = twist::ed::stdlike::mutex> class Mutexed {
-  // Define your own OwnerRef
-
 public:
-  // https://eli.thegreenplace.net/2014/perfect-forwarding-and-universal-references-in-c/
+  // general template for some template arguments for a constructor of original
+  // object
   template <typename... Args>
-  explicit Mutexed(Args &&...args) : object_(std::forward<Args>(args)...) {}
 
+  // constructor is explicit (we shouldn't everytime construct Mutexed from Args
+  // if they are in code)
+  explicit Mutexed(Args &&...args)
+      :
+
+        // std::forward<Args>(args)... creates an object from args of type T
+        // save this object in object_ filed
+        object_(std::forward<Args>(args)...) {}
+
+  // acquire
   OwnerRef<T, Mutex> Acquire() {
-    return OwnerRef(&object_, mutex_); // Your code goes here
+    // returns OwnerRef
+    return OwnerRef(&object_, mutex_);
   }
 
 private:

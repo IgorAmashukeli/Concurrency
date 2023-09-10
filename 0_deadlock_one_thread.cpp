@@ -10,10 +10,14 @@ using tf::Mutex;
 using tf::Spawn;
 using tf::Yield;
 
-/*** idea:
+/***
 
-- create multiple locks with the same mutex, to create a deadlock.
+Task:
+- Create a deadlock for one fiber (thread)
 
+
+Idea:
+- Create multiple locks with the same mutex, to create a deadlock.
 Next lock can't be taken untill the first is unlocked.
 
 **/
