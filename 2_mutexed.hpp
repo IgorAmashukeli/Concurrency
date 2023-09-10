@@ -41,7 +41,10 @@ public:
   T *operator->() { return object_ptr_; }
 
 private:
+  // pointer to the object
   T *object_ptr_;
+
+  // lock_guard to the mutex
   std::lock_guard<Mutex> guard_;
 };
 
@@ -58,8 +61,11 @@ public:
   }
 
 private:
+  // object
   T object_;
-  Mutex mutex_; // Guards access to object_
+
+  // guard access to object_
+  Mutex mutex_;
 };
 
 //////////////////////////////////////////////////////////////////////
