@@ -15,40 +15,48 @@ last philosopher: 1 fork, then k fork
 
 Let's proof there is no deadlock.
 
+Deadlock definition.
 
-Let's model situation, using wait-for graph.
+7.4.1 Mutual Exclusion
+Shared resources such as read-only files do not lead to deadlocks.
+Unfortunately some resources, such as printers and tape drives, require
+exclusive access by a single process. 7.4.2 Hold and Wait To prevent this
+condition processes must be prevented from holding one or more resources while
+simultaneously waiting for one or more others. There are several possibilities
+for this: Require that all processes request all resources at one time. This can
+be wasteful of system resources if a process needs one resource early in its
+execution and doesn't need some other resource until much later. Require that
+processes holding resources must release them before requesting new resources,
+and then re-acquire the released resources along with the new ones in a single
+new request. This can be a problem if a process has partially completed an
+operation using a resource and then fails to get it re-allocated after releasing
+it. Either of the methods described above can lead to starvation if a process
+requires one or more popular resources. 7.4.3 No Preemption Preemption of
+process resource allocations can prevent this condition of deadlocks, when it is
+possible. One approach is that if a process is forced to wait when requesting a
+new resource, then all other resources previously held by this process are
+implicitly released, ( preempted ), forcing this process to re-acquire the old
+resources along with the new resources in a single request, similar to the
+previous discussion. Another approach is that when a resource is requested and
+not available, then the system looks to see what other processes currently have
+those resources and are themselves blocked waiting for some other resource. If
+such a process is found, then some of their resources may get preempted and
+added to the list of resources for which the process is waiting. Either of these
+approaches may be applicable for resources whose states are easily saved and
+restored, such as registers and memory, but are generally not applicable to
+other devices such as printers and tape drives. 7.4.4 Circular Wait One way to
+avoid circular wait is to number all resources, and to require that processes
+request resources only in strictly increasing ( or decreasing ) order. In other
+words, in order to request resource Rj, a process must first release all Ri such
+that i >= j. One big challenge in this scheme is determining the relative
+ordering of the different resources
 
-It is bipartite directed graph.
 
-Left part consists of threads.
-Right part consists of mutexes.
-
-When lock is blocked by thread, thread is connected to mutex.
-When lock is acquired by thread, mutex is connected to thread.
-When thread unlocks, there is no edge between mutex and thread.
+That means, if there is no circular wait, there is no deadlock.
+There is no circular wait:
 
 
-Deadlock <=> there is cycle in this graph.
 
-Proof:
-
-1) deadlock -> cycle
-
-Suppose there is deadlock, that means:
-
-- Each process must be waiting for a resource which is being held by another
-process, which in turn is waiting for the first process to release the resource.
-In general, there is a set of waiting processes, P = {P1, P2, ..., PN},
-such that P1 is waiting for a resource held by P2,
-P2 is waiting for a resource held by P3 and so on until PN is waiting for a
-resource held by P1.
-
-- Only one process can use a resource at a time.
-
-- A resource can only be released voluntarily by the process holding it.
-
-- A process holding at least one resource is waiting to acquire additional
-resources which are currently held by other processes.
 **/
 
 namespace dining {
