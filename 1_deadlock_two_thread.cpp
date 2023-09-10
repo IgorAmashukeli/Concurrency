@@ -13,9 +13,18 @@
 
 idea:
 
-1) we create two mutexes, each one does a lock
+1) - create two mutexes, each one does a lock
 
-2) however we do lock order inversion (we don't follow resource ordering)
+2) - do lock inversion: one fiber does lock on mutex a first, second does lock
+on mutex b first
+
+3) first mutex a is acquired by fiber 1, yield
+
+4) second mutex b is acquired by fiber 2, yield
+
+5) there is no way to acquire mutex a or mutex b, because they are locked
+
+6) therefore, there is no progress and nothing runs in fiber 1 or fiber 2
 
 3) therefore we get a deadlock
 
