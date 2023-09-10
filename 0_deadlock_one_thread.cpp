@@ -10,8 +10,8 @@ using tf::Mutex;
 using tf::Spawn;
 using tf::Yield;
 
-// idea: we create multiple locks with the same mutex, to create a deadlock
-// next lock can't be taken untill the first is unlocked
+/*** idea: we create multiple locks with the same mutex, to create a deadlock
+next lock can't be taken untill the first is unlocked**/
 
 void OneFiberDeadLock() {
   Mutex mutex;

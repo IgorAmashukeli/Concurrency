@@ -9,10 +9,18 @@
 #include <tf/sync/mutex.hpp>
 #include <tf/sync/wait_group.hpp>
 
-// idea: we create two mutexes, each one does a lock
-// however we do lock order inversion (we don't follow resource ordering)
-// therefore we get a deadlock
-// yeild is used to do the switching
+/**
+
+idea:
+
+1) we create two mutexes, each one does a lock
+
+2) however we do lock order inversion (we don't follow resource ordering)
+
+3) therefore we get a deadlock
+
+ yeild is used to do the switching
+**/
 
 using tf::Mutex;
 using tf::Spawn;
